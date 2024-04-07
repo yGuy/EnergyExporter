@@ -241,7 +241,7 @@ public class MqttExporter : IDisposable
                 writer.WriteString("name", attribute.Field);
                 writer.WriteString("unique_id", deviceId + "_" + measurementName + "_" + attribute.Field + "_" + _exportOptions.Value.Mqtt!.Topic);
                 
-                if (metricAttribute.DeviceClass != null)
+                if (metricAttribute.Unit != null)
                 {
                     writer.WriteString("unit_of_measurement", metricAttribute.Unit);
                 }

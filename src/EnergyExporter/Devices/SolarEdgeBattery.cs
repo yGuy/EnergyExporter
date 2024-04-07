@@ -127,13 +127,13 @@ public class SolarEdgeBattery : SolarEdgeDevice
     [ModbusRegister(130, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_capacity_percent", "Capacity in percent")]
     [InfluxDbMetric("capacity_percent")]
-    [MqttMetric(unit:"%", deviceClass: "percent", stateClass: "measurement")]
+    [MqttMetric(unit:"%", stateClass: "measurement")]
     public float CapacityPercent { get; init; }
 
     [ModbusRegister(132, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_charge_percent", "Charge in percent")]
     [InfluxDbMetric("charge_percent")]
-    [MqttMetric(unit:"%", deviceClass: "percent", stateClass: "measurement")]
+    [MqttMetric(unit:"%", stateClass: "measurement")]
     public float ChargePercent { get; init; }
 
     [ModbusRegister(134, RegisterEndianness.MidLittleEndian)]
