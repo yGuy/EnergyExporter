@@ -1,5 +1,6 @@
 using EnergyExporter.InfluxDb;
 using EnergyExporter.Modbus;
+using EnergyExporter.Mqtt;
 using EnergyExporter.Prometheus;
 
 namespace EnergyExporter.Devices;
@@ -24,6 +25,7 @@ public enum SolarEdgeInverterStatus : ushort
 }
 
 [InfluxDbMeasurement("solaredge_inverter")]
+[MqttDeviceInfo(manufacturer: nameof(Manufacturer), model:nameof(Model), sw_version:nameof(Version), name: "solaredge_inverter", id: nameof(DeviceIdentifier))]
 public class SolarEdgeInverter : SolarEdgeDevice
 {
     public const ushort ModbusAddress = 0x9C40;
@@ -58,6 +60,7 @@ public class SolarEdgeInverter : SolarEdgeDevice
     [ScaledModbusRegister(71, typeof(ushort), 75, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_ac_current", "AC current")]
     [InfluxDbMetric("ac_current")]
+    [MqttMetric(unit:"A", deviceClass: "current", stateClass: "measurement")]
     public double AcCurrent { get; init; }
 
     [ScaledModbusRegister(72, typeof(ushort), 75, typeof(short))]
@@ -108,6 +111,7 @@ public class SolarEdgeInverter : SolarEdgeDevice
     [ScaledModbusRegister(83, typeof(short), 84, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_ac_power", "AC power")]
     [InfluxDbMetric("ac_power")]
+    [MqttMetric(unit:"W", deviceClass: "power", stateClass: "measurement")]
     public double AcPower { get; init; }
 
     [ScaledModbusRegister(85, typeof(ushort), 86, typeof(short))]
@@ -133,35 +137,42 @@ public class SolarEdgeInverter : SolarEdgeDevice
     [ScaledModbusRegister(93, typeof(uint), 95, typeof(ushort))]
     [PrometheusMetric(MetricType.Counter, "solaredge_inverter_ac_total_energy_produced", "AC total energy produced")]
     [InfluxDbMetric("ac_total_energy_produced")]
+    [MqttMetric(unit:"Wh", deviceClass: "energy", stateClass: "total")]
     public double AcTotalEnergyProduced { get; init; }
 
     [ScaledModbusRegister(96, typeof(ushort), 97, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_dc_current", "DC current")]
     [InfluxDbMetric("dc_current")]
+    [MqttMetric(unit:"A", deviceClass: "current", stateClass: "measurement")]
     public double DcCurrent { get; init; }
 
     [ScaledModbusRegister(98, typeof(ushort), 99, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_dc_voltage", "DC voltage")]
     [InfluxDbMetric("dc_voltage")]
+    [MqttMetric(unit:"V", deviceClass: "voltage", stateClass: "measurement")]
     public double DcVoltage { get; init; }
 
     [ScaledModbusRegister(100, typeof(short), 101, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_dc_power", "DC power")]
     [InfluxDbMetric("dc_power")]
+    [MqttMetric(unit:"W", deviceClass: "power", stateClass: "measurement")]
     public double DcPower { get; init; }
 
     [ScaledModbusRegister(103, typeof(short), 106, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_heat_sink_temperature", "Heat sink temperature")]
     [InfluxDbMetric("heat_sink_temperature")]
+    [MqttMetric(unit:"°C", deviceClass: "temperature", stateClass: "measurement")]
     public double HeatSinkTemperature { get; init; }
 
     [ModbusRegister(107)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_status", "Status")]
     [InfluxDbMetric("status")]
+    [MqttMetric(deviceClass: "enum")]
     public SolarEdgeInverterStatus Status { get; init; }
 
     [ModbusRegister(108)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_inverter_vendor_status", "Vendor status")]
     [InfluxDbMetric("vendor_status")]
+    [MqttMetric(deviceClass: "enum")]
     public ushort VendorStatus { get; init; }
 }

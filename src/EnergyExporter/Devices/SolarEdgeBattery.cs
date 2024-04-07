@@ -1,5 +1,6 @@
 using EnergyExporter.InfluxDb;
 using EnergyExporter.Modbus;
+using EnergyExporter.Mqtt;
 using EnergyExporter.Prometheus;
 
 namespace EnergyExporter.Devices;
@@ -16,6 +17,7 @@ public enum SolarEdgeBatteryStatus : uint
 }
 
 [InfluxDbMeasurement("solaredge_battery")]
+[MqttDeviceInfo(manufacturer: nameof(Manufacturer), model:nameof(Model), sw_version:nameof(Version), name: "solaredge_battery", id: nameof(DeviceIdentifier))]
 public class SolarEdgeBattery : SolarEdgeDevice
 {
     public static readonly ushort[] ModbusAddresses = { 0xE100, 0xE200 };
@@ -74,26 +76,31 @@ public class SolarEdgeBattery : SolarEdgeDevice
     [ModbusRegister(108, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_avg_temperature", "Average temperature")]
     [InfluxDbMetric("avg_temperature")]
+    [MqttMetric(unit:"°C", deviceClass: "temperature", stateClass: "measurement")]
     public float AvgTemperature { get; init; }
 
     [ModbusRegister(110, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_max_temperature", "Maximum temperature")]
     [InfluxDbMetric("max_temperature")]
+    [MqttMetric(unit:"°C", deviceClass: "temperature", stateClass: "measurement")]
     public float MaxTemperature { get; init; }
 
     [ModbusRegister(112, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_voltage", "Voltage")]
     [InfluxDbMetric("voltage")]
+    [MqttMetric(unit:"V", deviceClass: "voltage", stateClass: "measurement")]
     public float Voltage { get; init; }
 
     [ModbusRegister(114, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_current", "Current")]
     [InfluxDbMetric("current")]
+    [MqttMetric(unit:"A", deviceClass: "current", stateClass: "measurement")]
     public float Current { get; init; }
 
     [ModbusRegister(116, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_power", "Power")]
     [InfluxDbMetric("power")]
+    [MqttMetric(unit:"W", deviceClass: "power", stateClass: "measurement")]
     public float Power { get; init; }
 
     [ModbusRegister(118, RegisterEndianness.MidLittleEndian)]
@@ -109,6 +116,7 @@ public class SolarEdgeBattery : SolarEdgeDevice
     [ModbusRegister(126, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_capacity", "Power")]
     [InfluxDbMetric("capacity")]
+    [MqttMetric(unit:"Wh", deviceClass: "energy")]
     public float Capacity { get; init; }
 
     [ModbusRegister(128, RegisterEndianness.MidLittleEndian)]
@@ -119,21 +127,25 @@ public class SolarEdgeBattery : SolarEdgeDevice
     [ModbusRegister(130, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_capacity_percent", "Capacity in percent")]
     [InfluxDbMetric("capacity_percent")]
+    [MqttMetric(unit:"%", deviceClass: "percent", stateClass: "measurement")]
     public float CapacityPercent { get; init; }
 
     [ModbusRegister(132, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_charge_percent", "Charge in percent")]
     [InfluxDbMetric("charge_percent")]
+    [MqttMetric(unit:"%", deviceClass: "percent", stateClass: "measurement")]
     public float ChargePercent { get; init; }
 
     [ModbusRegister(134, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_status", "Status")]
     [InfluxDbMetric("status")]
+    [MqttMetric(deviceClass: "enum")]
     public SolarEdgeBatteryStatus Status { get; init; }
 
     [ModbusRegister(136, RegisterEndianness.MidLittleEndian)]
     [PrometheusMetric(MetricType.Gauge, "solaredge_battery_vendor_status", "Vendor status")]
     [InfluxDbMetric("vendor_status")]
+    [MqttMetric(deviceClass: "enum")]
     public uint VendorStatus { get; init; }
 
     [ModbusRegister(138, RegisterEndianness.MidLittleEndian)]

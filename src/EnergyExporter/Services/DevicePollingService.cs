@@ -19,6 +19,7 @@ public class DevicePollingService : IHostedService, IDisposable
     private readonly MqttExporter _mqttExporter;
 
     private Timer? _timer;
+    private int publishedDeviceCount = 0;
 
     public DevicePollingService(
         ILogger<DevicePollingService> logger,
@@ -65,6 +66,16 @@ public class DevicePollingService : IHostedService, IDisposable
         {
             await _deviceService.QueryDevicesAsync();
             _logger.LogDebug("Polling completed.");
+
+            var devicesCount = _deviceService.Devices.Count;
+            // we only publish the devices, when their number changes
+            if (publishedDeviceCount != devicesCount)
+            {
+                _logger.LogDebug("Publishing HomeAssistant Discovery information.");
+                await _mqttExporter.PublishHomeAssistantDiscoveryInformation();
+                publishedDeviceCount = devicesCount;
+                _logger.LogDebug("Publishing HomeAssistant Discovery information completed.");
+            }
 
             _logger.LogDebug("Pushing metrics.");
             await _influxDbExporter.PushMetricsAsync();

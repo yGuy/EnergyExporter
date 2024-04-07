@@ -1,6 +1,7 @@
 using System;
 using EnergyExporter.InfluxDb;
 using EnergyExporter.Modbus;
+using EnergyExporter.Mqtt;
 using EnergyExporter.Prometheus;
 
 namespace EnergyExporter.Devices;
@@ -33,6 +34,7 @@ public enum SolarEdgeMeterEvents : uint
 }
 
 [InfluxDbMeasurement("solaredge_meter")]
+[MqttDeviceInfo(manufacturer: nameof(Manufacturer), model:nameof(Model), sw_version:nameof(Version), name: "solaredge_meter", id: nameof(DeviceIdentifier))]
 public class SolarEdgeMeter : SolarEdgeDevice
 {
     public static readonly ushort[] ModbusAddresses = { 0x9CB9, 0x9D67, 0x9E15 };
@@ -71,6 +73,7 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(69, typeof(short), 73, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_meter_ac_current", "AC current")]
     [InfluxDbMetric("ac_current")]
+    [MqttMetric(unit:"A", deviceClass: "current", stateClass: "measurement")]
     public double AcCurrent { get; init; }
 
     [ScaledModbusRegister(70, typeof(short), 73, typeof(short))]
@@ -91,6 +94,7 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(74, typeof(short), 82, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_meter_ac_voltage_avg", "AC voltage average")]
     [InfluxDbMetric("ac_voltage_avg")]
+    [MqttMetric(unit:"V", deviceClass: "voltage", stateClass: "measurement")]
     public double AcVoltageAvg { get; init; }
 
     [ScaledModbusRegister(75, typeof(short), 82, typeof(short))]
@@ -134,11 +138,13 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(83, typeof(short), 84, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_meter_ac_frequency", "AC frequency")]
     [InfluxDbMetric("ac_frequency")]
+    [MqttMetric(unit:"Hz", deviceClass: "frequency", stateClass: "measurement")]
     public double AcFrequency { get; init; }
 
     [ScaledModbusRegister(85, typeof(short), 89, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_meter_ac_power", "AC power")]
     [InfluxDbMetric("ac_power")]
+    [MqttMetric(unit:"W", deviceClass: "power", stateClass: "measurement")]
     public double AcPower { get; init; }
 
     [ScaledModbusRegister(86, typeof(short), 89, typeof(short))]
@@ -159,6 +165,7 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(90, typeof(short), 94, typeof(short))]
     [PrometheusMetric(MetricType.Gauge, "solaredge_meter_ac_power_apparent", "AC power apparent")]
     [InfluxDbMetric("ac_power_apparent")]
+    [MqttMetric(unit:"W", deviceClass: "power", stateClass: "measurement")]
     public double AcPowerApparent { get; init; }
 
     [ScaledModbusRegister(91, typeof(short), 94, typeof(short))]
@@ -219,6 +226,7 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(105, typeof(uint), 121, typeof(short))]
     [PrometheusMetric(MetricType.Counter, "solaredge_meter_exported_energy", "Exported energy")]
     [InfluxDbMetric("exported_energy")]
+    [MqttMetric(unit:"Wh", deviceClass: "energy", stateClass: "total")]
     public double ExportedEnergy { get; init; }
 
     [ScaledModbusRegister(107, typeof(uint), 121, typeof(short))]
@@ -239,6 +247,7 @@ public class SolarEdgeMeter : SolarEdgeDevice
     [ScaledModbusRegister(113, typeof(uint), 121, typeof(short))]
     [PrometheusMetric(MetricType.Counter, "solaredge_meter_imported_energy", "Imported energy")]
     [InfluxDbMetric("imported_energy")]
+    [MqttMetric(unit:"Wh", deviceClass: "energy", stateClass: "total")]
     public double ImportedEnergy { get; init; }
 
     [ScaledModbusRegister(115, typeof(uint), 121, typeof(short))]

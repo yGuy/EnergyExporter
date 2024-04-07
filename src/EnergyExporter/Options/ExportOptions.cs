@@ -44,5 +44,7 @@ public class ExportOptions
         public string? User { get; init; } = null;
         
         public string? Password { get; init; } = null;
+
+        public string? HomeAssistantDiscoveryTopic { get; init; } = null;
     }
 }
